@@ -1,0 +1,21 @@
+stone-game/
+├── src/
+│   ├── main.cpp
+│   ├── common/
+│   │   ├── types.h
+│   │   ├── rng.h
+│   │   └── rng.cpp
+│   ├── game/
+│   │   ├── settings.h
+│   │   ├── stone_game.h
+│   │   └── stone_game.cpp
+│   ├── ai/
+│   │   ├── ai_agent.h
+│   │   ├── random_ai.h
+│   │   └── random_ai.cpp
+│   └── ui/
+│       ├── console_ui.h
+│       └── console_ui.cpp
+└── tests/
+    ├── test_stone_game.cpp
+    └── test_random_ai.cpp
