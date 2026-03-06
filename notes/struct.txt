@@ -1,0 +1,106 @@
+stone-game/
+├── src/
+│   ├── main.cpp
+│   ├── common/
+│   │   ├── random_utils.cpp
+│   │   └── input_utils.cpp
+│   ├── ds/
+│   │   └── pile_array.cpp
+│   ├── game/
+│   │   └── stone_game.cpp
+│   ├── ai/
+│   │   └── random_ai.cpp
+│   └── ui/
+│       └── console_ui.cpp
+├── include/
+│   ├── common/
+│   │   ├── types.h
+│   │   ├── random_utils.h
+│   │   └── input_utils.h
+│   ├── ds/
+│   │   └── pile_array.h
+│   ├── game/
+│   │   ├── settings.h
+│   │   └── stone_game.h
+│   ├── ai/
+│   │   ├── ai_agent.h
+│   │   └── random_ai.h
+│   └── ui/
+│       └── console_ui.h
+├── tests/
+│   ├── test_pile_array.cpp
+│   ├── test_stone_game.cpp
+│   └── test_random_ai.cpp
+├── notes/
+│   └── struct.txt
+└── build/
+
+Ở include/
+
+include/common/types.h
+include/common/random_utils.h
+include/common/input_utils.h
+include/ds/pile_array.h
+include/game/settings.h
+include/game/stone_game.h
+include/ai/ai_agent.h
+include/ai/random_ai.h
+include/ui/console_ui.h
+Tất cả file ở đây là khai báo:
+
+class
+struct
+enum
+prototype hàm
+
+
+
+Ở src/
+
+src/main.cpp
+src/common/random_utils.cpp
+src/common/input_utils.cpp
+src/ds/pile_array.cpp
+src/game/stone_game.cpp
+src/ai/random_ai.cpp
+src/ui/console_ui.cpp
+Tất cả file ở đây là cài đặt.
+
+
+
+Ở tests/
+
+tests/test_pile_array.cpp
+tests/test_stone_game.cpp
+tests/test_random_ai.cpp
+Dùng để test riêng từng phần:
+
+cấu trúc dữ liệu
+luật game
+AI random
+
+
+
+Ở notes/
+
+notes/struct.txt
+notes/_test.cpp
+mấy file nháp, ý tưởng, code thử
+Đây là chỗ ngoài lề, không thuộc mã nguồn chính.
+
+
+
+Ở build/
+
+file .o, .exe, output build
+không commit lên git
+
+
+
+Nói ngắn gọn:
+
+include/ = phần cho file khác nhìn thấy
+src/ = phần thực thi bên trong
+tests/ = kiểm thử
+notes/ = đồ nháp
+build/ = rác build
