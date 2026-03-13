@@ -7,6 +7,7 @@ struct vector_int {
     int capacity = 2;
 };
 
+
 //Khởi tạo vector
 void init (vector_int& v);
 
@@ -15,6 +16,19 @@ void init (vector_int& v, int size);
 
 //Khởi tạo vector với kích cỡ và giá trị
 void init (vector_int& v, int size, int value);
+
+
+
+// trả về vector
+vector_int create_vector();
+
+// trả về vector với kích cỡ
+vector_int create_vector(int size);
+
+// trả về vector với kích cỡ và giá trị
+vector_int create_vector(int size, int value);
+
+
 
 // giải phóng bộ nhớ cho vector
 void free (vector_int& v);

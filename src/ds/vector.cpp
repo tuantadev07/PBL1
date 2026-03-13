@@ -65,6 +65,28 @@ void init (vector_int& v, int size, int value) {
     }
 }
 
+vector_int create_vector() {
+    vector_int v;
+    init(v);
+
+    return v;
+}
+
+vector_int create_vector(int size) {
+    vector_int v;
+    init(v, size);
+
+    return v;
+}
+
+vector_int create_vector(int size, int value) {
+    vector_int v;
+    init(v, size, value);
+    
+    return v;
+}
+
+
 void free (vector_int& v) {
     delete[] v.data;
     v.data = nullptr;
