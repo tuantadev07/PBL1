@@ -9,13 +9,13 @@ struct vector_int {
 
 
 //Khởi tạo vector
-void init (vector_int& v);
+void init_vector (vector_int& v);
 
 //Khởi tạo vector với kích cỡ
-void init (vector_int& v, int size);
+void init_vector (vector_int& v, int size);
 
 //Khởi tạo vector với kích cỡ và giá trị
-void init (vector_int& v, int size, int value);
+void init_vector (vector_int& v, int size, int value);
 
 
 
