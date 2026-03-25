@@ -1,77 +1,181 @@
+﻿#include "ui.h"
+#include "ai.h"
+#include "game.h"
+
+#include <windows.h>
 #include <iostream>
-#include <random>
+
 using namespace std;
 
-int main () {
+void start_game (int gameMode) {
 
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<int> rng(1, 10);
+    int pileCount = input_pile_count();
 
-    int n; cin >> n;
-    int a[n];
+    GameState game;
+    init_game(game, pileCount, gameMode);
+
+    // thông tin về lừa đi cuối cùng
+    bool hasLastMove = false;
+    GameState oldGame;
+    Move lastMove;
+    int lastActor = -1;
+
+    // game loop
+    while (true) {
+
+        // in ra trạng thái trước và nước đi
+        if (hasLastMove) {
+            clear_screen();
+
+            show_last_game_state(oldGame);
+
+            show_last_move(oldGame, lastActor, lastMove);
+
+            show_current_game_state(game);
+
+            if (is_game_over(game)) {
+                show_winner(game);
+
+                free_game(oldGame);
+
+                wait_enter();
+                break;
+            }
+
+            wait_enter();
+        }
+
+
+        // phần lấy nước đi
+
+        Move move;
+        int actor = game.currentTurn;
+
+        if (game.gameMode == GAME_MODE_PVP || game.currentTurn == 0) {
+            const char* errorMessage = nullptr;
+
+            // Lấy nước đi của người chơi và máy
+            while (true) {
+                clear_screen();
+                show_current_game_state(game);
+
+                if (errorMessage != nullptr) {
+                    cout << errorMessage << "\n\n";
+                }
+
+                show_input_player_move(game);
+
+                InputMoveStatus status = input_player_move(move);
+
+                if (status == INPUT_MOVE_TOO_LONG) {
+                    errorMessage = "Quá dài, nhập lại";
+                    continue;
+                }
+
+                if (status == INPUT_MOVE_INVALID_FORMAT) {
+                    errorMessage = "Sai định dạng, nhập lại. Ví dụ: 2 5";
+                    continue;
+                }
+
+                if (!is_valid_move(game, move)) {
+                    errorMessage = "Nước đi không hợp lệ, nhập lại";
+                    continue;
+                }
     
-    for (int i=0; i<n; ++i) {
-        a[i] = rng(gen);
-    }
-
-    int sum = 0;
-    for (int i=0; i<n; ++i) {
-        sum += a[i];
-    }
-
-    string s[2] = {
-        "You",
-        "AI"
-    };
-
-    int luot = 0;
-    while (sum) {
-        luot = 1 - luot;
+                // nếu nước đi hợp lệ
+                break;
+            }
+        } else {
+            move = choose_random_move(game);
+        }
         
-        for (int i=0; i<n; ++i) {
-            cout << "Dong " << i+1 <<": " <<a[i] << '\n';
+
+        // xử lý sau khi lấy nưỡc đi
+
+        if (hasLastMove) {
+            free_game(oldGame);
         }
 
-        cout << '\n';
+        oldGame = copy_game_state(game);
 
-        cout << "Den luoc " << s[luot] << '\n';
-        if (!luot) {
-            int p;
-            cout << "chon dong: ";
-            cin >> p;
+        apply_move(game, move);
 
-            int cnt;
-            cout << "cho so luong: ";
-            cin >> cnt;
+        lastActor = actor;
+        lastMove = move;
+        hasLastMove = true;
 
-            a[p-1] -= cnt;
-            sum -= cnt;
-        }else {
-            int p;
-            uniform_int_distribution<int> rng1(1, n);
 
-            do {
-                p = rng1(gen);
-            } while (!a[p-1]);
-
-            uniform_int_distribution<int> rng2(1, a[p-1]);
-            int cnt = rng2(gen);
-
-            a[p-1] -= cnt;
-            sum -= cnt;
-
-            cout << "AI chon dong " << p << '\n';
-            cout << "So luong: " << cnt << '\n';   
-        }
-        cout << '\n';
+        // nếu game chưa kết thúc thì tiếp tục
+        if (!is_game_over(game)) {
+            next_turn(game);
+        }        
     }
-    cout << s[luot] << " boc cuoi cung\n";
-    cout << s[1-luot] << " Win\n"; 
 
-    system("pause");
-    cin >> n;
+    //giải phóng dung lượng
+    free_game(game);
 
-    return 0;
 }
 
+void run_game () {
+    // game loop
+    while (true) {
+        clear_screen();
+
+        // phần menu chính
+        int choice = show_main_menu();
+
+        // bắt đầu game
+        if (choice == MAIN_MENU_START) {
+            while (true) {
+                clear_screen();
+
+                int mode = show_game_mode_menu();
+
+                if (mode == GAME_MODE_PVP) {
+                    cout << "\nChưa có tính năng này\n";
+                    wait_enter();
+                    continue;
+                }
+
+                if (mode == GAME_MODE_PVAI) {
+                    clear_screen();
+                    start_game(mode);
+                    continue;
+                }
+
+                if (mode == GAME_MODE_AIVAI) {
+                    cout << "\nChưa có tính năng này\n";
+                    wait_enter();
+                    continue;
+                }
+
+                if (mode == GAME_MODE_EXIT) {
+                    break;
+                }
+            }
+            continue;
+        }
+
+        // thoát game
+        if (choice == MAIN_MENU_EXIT) {
+            clear_screen();
+
+            int exit = show_exit_game_menu();
+            if (exit == EXIT_GAME_YES) {
+                return;
+            } else {
+                continue;
+            }
+        }
+    }
+}
+
+int main() {
+    // in ra tiếng việt
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    run_game();
+    
+    return 0;
+}

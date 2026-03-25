@@ -23,7 +23,7 @@ namespace {
 }
 
 
-void init (vector_int& v) {
+void init_vector (vector_int& v) {
     free(v);
 
     v.capacity = 2;
@@ -31,11 +31,11 @@ void init (vector_int& v) {
     v.data = new int[v.capacity];
 }
 
-void init (vector_int& v, int size) {
+void init_vector (vector_int& v, int size) {
     free(v);
 
     if (size <= 0) {
-        init(v);
+        init_vector(v);
         return;
     }
 
@@ -48,11 +48,11 @@ void init (vector_int& v, int size) {
     }
 }
 
-void init (vector_int& v, int size, int value) {
+void init_vector (vector_int& v, int size, int value) {
     free(v);
 
     if (size <= 0) {
-        init(v);
+        init_vector(v);
         return;
     }
 
@@ -64,6 +64,28 @@ void init (vector_int& v, int size, int value) {
         v.data[i] = value;
     }
 }
+
+vector_int create_vector() {
+    vector_int v;
+    init_vector(v);
+
+    return v;
+}
+
+vector_int create_vector(int size) {
+    vector_int v;
+    init_vector(v, size);
+
+    return v;
+}
+
+vector_int create_vector(int size, int value) {
+    vector_int v;
+    init_vector(v, size, value);
+    
+    return v;
+}
+
 
 void free (vector_int& v) {
     delete[] v.data;
@@ -112,7 +134,7 @@ bool set (vector_int& v, int index, int value) {
 
 void push_back (vector_int& v, int value) {
     if (v.data == nullptr) {
-        init(v);
+        init_vector(v);
     }
     if (v.size == v.capacity) {
         _resize(v);
