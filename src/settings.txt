@@ -1,0 +1,6 @@
+minPileCount 2
+maxPileCount 10
+minInitialStoneCount 5
+maxInitialStoneCount 10
+maxTakePerMove 0
+gameRule 0

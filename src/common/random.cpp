@@ -8,6 +8,10 @@
 
 
 int random_int (int left, int right) {
+
+    // std::random_device seed;
+    // static std::mt19937 gen(seed());
+
     static std::mt19937 genrator(std::random_device{}());
     
     if (left > right) {

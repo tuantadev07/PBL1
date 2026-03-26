@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.h"
+#include "game_settings.h"
 
 
 struct Move {
@@ -10,14 +11,15 @@ struct Move {
 
 struct GameState {
     vector_int piles;
-    int gameMode = 0;
-    int gameRule = 0;
+    GameMode gameMode = GAME_MODE_PVAI;
+    GameSettings settings;
     int currentTurn = 0;
     int totalStones = 0;
 };
 
+
 // khởi tạo game
-void init_game (GameState& game, int pileCount, int gameMode);
+void init_game (GameState& game, int pileCount, GameMode gameMode, const GameSettings& settings);
 // giải phóng dung lượng game.piles
 void free_game (GameState& game);
 
