@@ -1,10 +1,9 @@
 #pragma once
 
 enum GameMode {
-    GAME_MODE_EXIT = 0,
-    GAME_MODE_PVP = 1,
-    GAME_MODE_PVAI = 2,
-    GAME_MODE_AIVAI = 3,
+    GAME_MODE_PVP = 0,
+    GAME_MODE_PVAI,
+    GAME_MODE_AIVAI,
     GAME_MODE_COUNT
 };
 

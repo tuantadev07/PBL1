@@ -8,11 +8,20 @@ enum MainMenu {
     MAIN_MENU_COUNT
 };
 
-enum ExitGame {
+enum ExitGameMenu {
     EXIT_GAME_NO = 0,
     EXIT_GAME_YES = 1,
     EXIT_GAME_COUNT
 };
+
+enum GameModeMenu {
+    GAME_MODE_MENU_EXIT = 0,
+    GAME_MODE_MENU_PVP = 1,
+    GAME_MODE_MENU_PVAI = 2,
+    GAME_MODE_MENU_AIVAI = 3,
+    GAME_MODE_MENU_COUNT
+};
+
 
 enum InputStatus {
     INPUT_OK = 0,
@@ -20,6 +29,8 @@ enum InputStatus {
     INPUT_INVALID_FORMAT,
     INPUT_TOO_LONG
 };
+
+
 
 
 // dọn ký tụ rác và thừa còn lại
@@ -34,13 +45,13 @@ void clear_screen ();
 
 
 // in ra menu chính và trả về lựa chọn
-int show_main_menu ();
+MainMenu show_main_menu ();
 
 // in ra menu chế độ chơi và trả về lựa chọn
-int show_game_mode_menu ();
+GameModeMenu show_game_mode_menu ();
 
 // in ra menu lúc xác nhận thoát game
-int show_exit_game_menu ();
+ExitGameMenu show_exit_game_menu ();
 
 
 

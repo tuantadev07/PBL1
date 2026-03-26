@@ -18,7 +18,7 @@ namespace {
         "0. Thoát"
     };
 
-    const char* gameModeList[GAME_MODE_COUNT] = {
+    const char* gameModeList[GAME_MODE_MENU_COUNT] = {
         "1. Người vs Người",
         "2. Người vs AI",
         "3. AI vs AI",
@@ -33,8 +33,6 @@ namespace {
 
    
     const char* actorTextList[GAME_MODE_COUNT][2] = {
-        {"", ""},
-
         // PVP
         {
             "Người chơi 1",
@@ -78,7 +76,7 @@ namespace {
         cout << "====================\n";
 
         // in ra danh sách lựa chọn
-        for (int i=0; i<GAME_MODE_COUNT; ++i) {
+        for (int i=0; i<GAME_MODE_MENU_COUNT; ++i) {
             cout << gameModeList[i] << '\n';
         }
 
@@ -188,17 +186,17 @@ void clear_screen () {
 
 
 // in ra menu chính
-int show_main_menu () {
-    return _show_menu(_main_menu, MAIN_MENU_COUNT);
+MainMenu show_main_menu () {
+    return (MainMenu)_show_menu(_main_menu, MAIN_MENU_COUNT);
 }
 
 // in ra menu chế độ chơi
-int show_game_mode_menu () {
-    return _show_menu(_game_mode_menu, GAME_MODE_COUNT);
+GameModeMenu show_game_mode_menu () {
+    return (GameModeMenu)_show_menu(_game_mode_menu, GAME_MODE_MENU_COUNT);
 }
 
-int show_exit_game_menu () {
-    return _show_menu(_exit_game_menu, EXIT_GAME_COUNT);
+ExitGameMenu show_exit_game_menu () {
+    return (ExitGameMenu)_show_menu(_exit_game_menu, EXIT_GAME_COUNT);
 }
 
 
@@ -231,7 +229,7 @@ InputStatus input_pile_count (int& pileCount) {
 }
 
 void show_input_player_move (const GameState& game) {
-    cout << "Đến lượt " << actorTextList[game.gameMode][game.currentTurn] << '\n';
+    cout << "Đến lượt " << actorTextList[game.gameMode][game.currentTurn] << "\n\n";
     cout << "Nhập đống sỏi và số lượng muốn lấy (ví dụ: 2 5): ";
 }
 
@@ -262,7 +260,7 @@ InputStatus input_player_move (Move& move) {
 // * SHOW ---------------------------------
 
 void show_last_game_state (const GameState& oldGame) {
-    cout << "Trạng thái game trước đó là\n";
+    cout << "Trạng thái game trước đó:\n";
 
     _show_game_state(oldGame);
 
@@ -270,7 +268,7 @@ void show_last_game_state (const GameState& oldGame) {
 }
 
 void show_current_game_state (const GameState& game) {
-    cout << "Trạng thái game hiện tại\n";
+    cout << "Trạng thái game hiện tại:\n";
 
     _show_game_state(game);
 

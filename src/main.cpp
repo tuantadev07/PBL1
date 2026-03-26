@@ -35,6 +35,7 @@ void start_game (GameMode gameMode, const GameSettings& settings) {
         if (errorMessage != nullptr) {
             cout << errorMessage << '\n';
             wait_enter();
+            clear_screen();
         }
 
         show_input_pile_count(settings);
@@ -108,6 +109,10 @@ void start_game (GameMode gameMode, const GameSettings& settings) {
 
                 if (errorMessage != nullptr) {
                     cout << errorMessage << "\n\n";
+                    
+                    wait_enter();
+                    clear_screen();
+                    show_current_game_state(game);
                 }
 
                 show_input_player_move(game);
@@ -172,34 +177,34 @@ void run_game () {
         clear_screen();
 
         // phần menu chính
-        int choice = show_main_menu();
+        MainMenu choice = show_main_menu();
 
         // bắt đầu game
         if (choice == MAIN_MENU_START) {
             while (true) {
                 clear_screen();
 
-                int mode = show_game_mode_menu();
+                GameModeMenu modeChoice = show_game_mode_menu();
 
-                if (mode == GAME_MODE_PVP) {
-                    cout << "\nNạp lần đầu để mở khóa chức năng này\n";
-                    wait_enter();
-                    continue;
-                }
-
-                if (mode == GAME_MODE_PVAI) {
+                if (modeChoice == GAME_MODE_MENU_PVP) {
                     clear_screen();
-                    start_game((GameMode)mode, settings);
+                    start_game(GAME_MODE_PVP, settings);
                     continue;
                 }
 
-                if (mode == GAME_MODE_AIVAI) {
+                if (modeChoice == GAME_MODE_MENU_PVAI) {
+                    clear_screen();
+                    start_game(GAME_MODE_PVAI, settings);
+                    continue;
+                }
+
+                if (modeChoice == GAME_MODE_MENU_AIVAI) {
                     cout << "\nNạp lần đầu để mở khóa chức năng này\n";
                     wait_enter();
                     continue;
                 }
 
-                if (mode == GAME_MODE_EXIT) {
+                if (modeChoice == GAME_MODE_MENU_EXIT) {
                     break;
                 }
             }
@@ -210,8 +215,8 @@ void run_game () {
         if (choice == MAIN_MENU_EXIT) {
             clear_screen();
 
-            int exit = show_exit_game_menu();
-            if (exit == EXIT_GAME_YES) {
+            ExitGameMenu exitChoice = show_exit_game_menu();
+            if (exitChoice == EXIT_GAME_YES) {
                 return;
             } else {
                 continue;
