@@ -9,6 +9,35 @@ using namespace std;
 
 
 
+MatchConfig create_match_config (GameMode gameMode) {
+    MatchConfig matchConfig;
+    matchConfig.gameMode = gameMode;
+
+    if (gameMode == GAME_MODE_PVP) {
+        matchConfig.players[0].type = PLAYER_TYPE_HUMAN;
+        matchConfig.players[1].type = PLAYER_TYPE_HUMAN;
+    } 
+    else if (gameMode == GAME_MODE_PVAI) {
+        matchConfig.players[0].type = PLAYER_TYPE_HUMAN;
+        matchConfig.players[1].type = PLAYER_TYPE_AI;
+        matchConfig.players[1].difficulty = AI_DIFFICULTY_VERY_EASY;
+    }
+    else {
+        matchConfig.players[0].type = PLAYER_TYPE_AI;
+        matchConfig.players[1].type = PLAYER_TYPE_AI;
+        matchConfig.players[0].difficulty = AI_DIFFICULTY_VERY_EASY;
+        matchConfig.players[1].difficulty = AI_DIFFICULTY_VERY_EASY;
+    }
+
+    return matchConfig;
+}
+
+
+ExitConfirmChoice confirm_exit () {
+    clear_screen();
+    return show_exit_menu();
+}
+
 const char* get_input_error_message(InputStatus status) {
     if (status == INPUT_TOO_LONG) {
         return "Quá dài, vui lòng nhập lại";
@@ -22,25 +51,22 @@ const char* get_input_error_message(InputStatus status) {
 }
 
 
-
-void start_game (GameMode gameMode, const GameSettings& settings) {
-
-    int pileCount;
+bool get_pile_count (const GameSettings& settings, int& pileCount) {
     const char* errorMessage = nullptr;
 
     // nhập số đống sỏi
     while (true) {
         clear_screen();
-
-        if (errorMessage != nullptr) {
-            cout << errorMessage << '\n';
-            wait_enter();
-            clear_screen();
-        }
-
-        show_input_pile_count(settings);
+        show_input_pile_count(settings, errorMessage);
 
         InputStatus status = input_pile_count(pileCount);
+
+        if (status == INPUT_EXIT) {
+            if (confirm_exit() == EXIT_CONFIRM_YES) {
+                return false;
+            }
+            continue;
+        }
 
         const char* inputErrorMessage = get_input_error_message(status);
         if (inputErrorMessage != nullptr) {
@@ -52,21 +78,61 @@ void start_game (GameMode gameMode, const GameSettings& settings) {
             errorMessage = "Số đống sỏi không nằm trong giới hạn, nhập lại";
             continue;
         }
-
         // nếu số đống sỏi hợp lệ
-        break;
+        return true;
     }
-    
+}
+
+bool get_player_move (const GameState& game, Move& move) {
+    const char* errorMessage = nullptr;
+
+    // Lấy nước đi của người chơi và máy
+    while (true) {
+        clear_screen();
+        show_current_game_state(game);
+        show_input_player_move(game, errorMessage);
+
+        InputStatus status = input_player_move(move);
+
+        if (status == INPUT_EXIT) {
+            if (confirm_exit() == EXIT_CONFIRM_YES) {
+                return false;
+            }
+            continue;
+        }
+
+        const char* inputErrorMessage = get_input_error_message(status);
+        if (inputErrorMessage != nullptr) {
+            errorMessage = inputErrorMessage;
+            continue;
+        }
+
+        if (!is_valid_move(game, move)) {
+            errorMessage = "Nước đi không hợp lệ, nhập lại";
+            continue;
+        }
+        // nếu nước đi hợp lệ
+        return true;
+    }
+}
+
+
+void start_game (const MatchConfig& matchConfig, const GameSettings& settings) {
+
+    int pileCount;
+    if (!get_pile_count(settings, pileCount)) {
+        return;
+    }
 
     // khởi tạo
     GameState game;
-    init_game(game, pileCount, gameMode, settings);
+    init_game(game, pileCount, matchConfig, settings);
 
     // thông tin về lượt đi cuối cùng
     bool hasLastMove = false;
-    GameState oldGame;
+    GameState lastGame;
     Move lastMove;
-    int lastActor = -1;
+    
 
     // game loop
     while (true) {
@@ -75,84 +141,43 @@ void start_game (GameMode gameMode, const GameSettings& settings) {
         if (hasLastMove) {
             clear_screen();
 
-            show_last_game_state(oldGame);
-
-            show_last_move(oldGame, lastActor, lastMove);
-
+            show_last_game_state(lastGame);
+            show_last_move(lastGame, lastMove);
             show_current_game_state(game);
 
+            // nếu game đã kết thúc
             if (is_game_over(game)) {
                 show_winner(game);
-
-                free_game(oldGame);
-
                 wait_enter();
                 break;
             }
 
-            wait_enter();
+            wait_press();
         }
-
 
         // phần lấy nước đi
 
         Move move;
-        int actor = game.currentTurn;
 
-        if (game.gameMode == GAME_MODE_PVP || game.currentTurn == 0) {
-            const char* errorMessage = nullptr;
-
-            // Lấy nước đi của người chơi và máy
-            while (true) {
-                clear_screen();
-                show_current_game_state(game);
-
-                if (errorMessage != nullptr) {
-                    cout << errorMessage << "\n\n";
-                    
-                    wait_enter();
-                    clear_screen();
-                    show_current_game_state(game);
-                }
-
-                show_input_player_move(game);
-
-                InputStatus status = input_player_move(move);
-
-                const char* inputErrorMessage = get_input_error_message(status);
-                if (inputErrorMessage != nullptr) {
-                    errorMessage = inputErrorMessage;
-                    continue;
-                }
-
-                if (!is_valid_move(game, move)) {
-                    errorMessage = "Nước đi không hợp lệ, nhập lại";
-                    continue;
-                }
-    
-                // nếu nước đi hợp lệ
+        if (game.matchConfig.players[game.currentTurn].type == PLAYER_TYPE_HUMAN) {
+            if (!get_player_move(game, move)) {
                 break;
             }
         } else {
-            move = choose_random_move(game);
+            move = choose_ai_move(game);
         }
         
-
+        
         // xử lý sau khi lấy nước đi
-
         if (hasLastMove) {
-            free_game(oldGame);
+            free_game(lastGame);
         }
-
-        oldGame = copy_game_state(game);
-
-        apply_move(game, move);
-
-        lastActor = actor;
+        lastGame = copy_game_state(game);
         lastMove = move;
         hasLastMove = true;
 
-
+        apply_move(game, move);
+        
         // nếu game chưa kết thúc thì tiếp tục
         if (!is_game_over(game)) {
             next_turn(game);
@@ -161,13 +186,44 @@ void start_game (GameMode gameMode, const GameSettings& settings) {
 
     //giải phóng dung lượng
     free_game(game);
-
+    if (hasLastMove) {
+        free_game(lastGame);
+    }
 }
 
 
 
 
 // * 
+
+void run_mode_menu (const GameSettings& settings) {
+    while (true) {
+        clear_screen();
+
+        GameModeMenu modeChoice = show_game_mode_menu();
+
+        if (modeChoice == GAME_MODE_MENU_PVP) {
+            start_game(create_match_config(GAME_MODE_PVP), settings);
+            continue;
+        }
+
+        if (modeChoice == GAME_MODE_MENU_PVAI) {
+            start_game(create_match_config(GAME_MODE_PVAI), settings);
+            continue;
+        }
+
+        if (modeChoice == GAME_MODE_MENU_AIVAI) {
+            // start_game(create_match_config(GAME_MODE_AIVAI), settings);
+            cout << "\nNạp lần đầu để mở khóa chế độ này\n";
+            wait_press();
+            continue;
+        }
+
+        if (modeChoice == GAME_MODE_MENU_EXIT) {
+            return;
+        }
+    }
+}
 
 void run_game () {
     GameSettings settings = load_game_settings();
@@ -181,46 +237,16 @@ void run_game () {
 
         // bắt đầu game
         if (choice == MAIN_MENU_START) {
-            while (true) {
-                clear_screen();
-
-                GameModeMenu modeChoice = show_game_mode_menu();
-
-                if (modeChoice == GAME_MODE_MENU_PVP) {
-                    clear_screen();
-                    start_game(GAME_MODE_PVP, settings);
-                    continue;
-                }
-
-                if (modeChoice == GAME_MODE_MENU_PVAI) {
-                    clear_screen();
-                    start_game(GAME_MODE_PVAI, settings);
-                    continue;
-                }
-
-                if (modeChoice == GAME_MODE_MENU_AIVAI) {
-                    cout << "\nNạp lần đầu để mở khóa chức năng này\n";
-                    wait_enter();
-                    continue;
-                }
-
-                if (modeChoice == GAME_MODE_MENU_EXIT) {
-                    break;
-                }
-            }
+            run_mode_menu(settings);
             continue;
         }
 
         // thoát game
         if (choice == MAIN_MENU_EXIT) {
-            clear_screen();
-
-            ExitGameMenu exitChoice = show_exit_game_menu();
-            if (exitChoice == EXIT_GAME_YES) {
+            if (confirm_exit() == EXIT_CONFIRM_YES) 
                 return;
-            } else {
+            else 
                 continue;
-            }
         }
     }
 }

@@ -3,23 +3,21 @@
 #include "random.h"
 
 
-void init_game (GameState& game, int pileCount, GameMode gameMode, const GameSettings& settings) {
+void init_game (GameState& game, int pileCount, const MatchConfig& matchConfig, const GameSettings& settings) {
     init_vector(game.piles, pileCount);
 
-    game.gameMode = gameMode;
+    game.matchConfig = matchConfig;
     game.settings = settings;
     game.currentTurn = 0;
     game.totalStones = 0;
 
     for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
-
         set(game.piles, pileIndex, 
             random_int(
                 settings.minInitialStoneCount, 
                 settings.maxInitialStoneCount
             )
         );
-
         game.totalStones += get(game.piles, pileIndex);
     }
 }
@@ -73,7 +71,7 @@ GameState copy_game_state(const GameState& game) {
     GameState gameCopy;
 
     gameCopy.piles = copy(game.piles);
-    gameCopy.gameMode = game.gameMode;
+    gameCopy.matchConfig = game.matchConfig;
     gameCopy.currentTurn = game.currentTurn;
     gameCopy.totalStones = game.totalStones;
     gameCopy.settings = game.settings;

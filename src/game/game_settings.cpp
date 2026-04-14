@@ -14,7 +14,7 @@ GameSettings load_game_settings() {
         return settings;
     }
 
-    char key[100];
+    char key[1000];
     int value;
 
     while (file >> key >> value) {
@@ -32,8 +32,8 @@ GameSettings load_game_settings() {
         }
         else if (strcmp(key, "maxTakePerMove") == 0) {
             settings.maxTakePerMove = value;
-        } else if (strcmp(key, "gameRule") == 0) {
-            settings.gameRule = (GameRule)value;
+        } else if (strcmp(key, "gameRule") == 0) {  
+            settings.gameRule = (GameRule)value; 
         }
     }
 

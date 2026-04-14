@@ -21,10 +21,8 @@ void init_vector (vector_int& v, int size, int value);
 
 // trả về vector
 vector_int create_vector();
-
 // trả về vector với kích cỡ
 vector_int create_vector(int size);
-
 // trả về vector với kích cỡ và giá trị
 vector_int create_vector(int size, int value);
 
@@ -32,22 +30,16 @@ vector_int create_vector(int size, int value);
 
 // giải phóng bộ nhớ cho vector
 void free (vector_int& v);
-
 // cấp phát bộ nhớ cho vector
 void reserve (vector_int& v, int newCapacity);
-
 // trả về 1 vector giống dữ liệu nhưng khác địa chỉ bộ nhớ
 vector_int copy (const vector_int& v);
-
 // lấy giá trị tại chỉ số
 int get (const vector_int& v, int index);
-
 // đặt giá trị tại chỉ số
 bool set (vector_int& v, int index, int value);
-
 // thêm phần tử vào cuối vector
 void push_back (vector_int& v, int value);
-
 // xóa phần tử ở cuối vector
 void pop_back (vector_int& v);
 
