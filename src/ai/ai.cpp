@@ -27,3 +27,13 @@ Move choose_random_move(const GameState& game) {
 
     return move;
 }
+
+Move choose_ai_move(const GameState& game) {
+    AIDifficulty difficulty = game.matchConfig.players[game.currentTurn].difficulty;
+
+    if (difficulty == AI_DIFFICULTY_VERY_EASY) {
+        return choose_random_move(game);
+    }
+
+    return choose_random_move(game);
+}

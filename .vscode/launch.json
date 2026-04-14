@@ -20,10 +20,10 @@
                                "preLaunchTask":  "02) Build active -\u003e \u003cname\u003e.exe (link all build/*.o)"
                            },
                            {
-                               "name":  "Debug stone-game.exe",
+                               "name":  "Debug nim-game.exe",
                                "type":  "cppdbg",
                                "request":  "launch",
-                               "program":  "${workspaceFolder}\\stone-game.exe",
+                               "program":  "${workspaceFolder}\\nim-game.exe",
                                "args":  [
 
                                         ],
@@ -35,7 +35,7 @@
                                "externalConsole":  true,
                                "MIMode":  "gdb",
                                "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
-                               "preLaunchTask":  "03) Build all src -\u003e stone-game.exe"
+                               "preLaunchTask":  "03) Build all src -\u003e nim-game.exe"
                            }
                        ]
 }

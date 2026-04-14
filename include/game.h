@@ -11,7 +11,7 @@ struct Move {
 
 struct GameState {
     vector_int piles;
-    GameMode gameMode = GAME_MODE_PVAI;
+    MatchConfig matchConfig;
     GameSettings settings;
     int currentTurn = 0;
     int totalStones = 0;
@@ -19,7 +19,7 @@ struct GameState {
 
 
 // khởi tạo game
-void init_game (GameState& game, int pileCount, GameMode gameMode, const GameSettings& settings);
+void init_game (GameState& game, int pileCount, const MatchConfig& matchConfig, const GameSettings& settings);
 // giải phóng dung lượng game.piles
 void free_game (GameState& game);
 

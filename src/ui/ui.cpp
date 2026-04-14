@@ -2,10 +2,12 @@
 
 #include <iostream>
 #include <stdio.h>
-#include <stdlib.h>
+#include <conio.h>
 
 using std::cout;
 using std::cin;
+
+
 
 namespace {
     const int INF = (int)1e9;
@@ -25,32 +27,27 @@ namespace {
         "0. Quay lại"
     };
 
-    const char* exitGameList[EXIT_GAME_COUNT] = {
+    const char* exitGameList[EXIT_CONFIRM_COUNT] = {
         "1. Có",
         "0. Không"
     };
 
 
-   
-    const char* actorTextList[GAME_MODE_COUNT][2] = {
-        // PVP
-        {
-            "Người chơi 1",
-            "Người chơi 2"
-        },
+    const char* _get_actor_text(const GameState& game, int actorIndex) {
+        const PlayerConfig& p0 = game.matchConfig.players[0];
+        const PlayerConfig& p1 = game.matchConfig.players[1];
 
-        // PVAI
-        {
-            "Người chơi",
-            "AI"
-        },
-
-        // AIVAI
-        {
-            "AI 1",
-            "AI 2"
+        if (p0.type == PLAYER_TYPE_HUMAN && p1.type == PLAYER_TYPE_AI) {
+            return actorIndex == 0 ? "Người chơi" : "AI";
         }
-    };
+
+        if (p0.type == PLAYER_TYPE_AI && p1.type == PLAYER_TYPE_AI) {
+            return actorIndex == 0 ? "AI 1" : "AI 2";
+        }
+
+        return actorIndex == 0 ? "Người chơi 1" : "Người chơi 2";
+    }
+
 
 
 
@@ -58,79 +55,83 @@ namespace {
     // * hàm in ra menu
     
     void _main_menu () {
-        cout << "====================\n";
-        cout << "        STONE GAME\n";
-        cout << "====================\n";
+        cout << ANSI_BOLD_CYAN << 
+                "╔══════════════════════════════╗\n";
+        cout << "║           NIM GAME           ║\n";
+        cout << "╚══════════════════════════════╝\n";
+
 
         // in ra danh sách lựa chọn
-        for (int i=0; i<MAIN_MENU_COUNT; ++i) {
-            cout << mainMenuList[i] << '\n';
+        for (int i=0; i<MAIN_MENU_COUNT-1; ++i) {
+            cout << ANSI_BOLD_GREEN << mainMenuList[i] << '\n';
         }
+        cout << ANSI_BOLD_RED   << mainMenuList[MAIN_MENU_COUNT-1] << ANSI_RESET << '\n';
 
-        cout << "\nChọn: ";
     }
 
     void _game_mode_menu () {
-        cout << "====================\n";
-        cout << "        CHỌN CHẾ ĐỘ\n";
-        cout << "====================\n";
+        cout << ANSI_BOLD_CYAN << 
+                "╔══════════════════════════════╗\n";
+        cout << "║          CHỌN CHẾ ĐỘ         ║\n";
+        cout << "╚══════════════════════════════╝\n";
 
         // in ra danh sách lựa chọn
-        for (int i=0; i<GAME_MODE_MENU_COUNT; ++i) {
-            cout << gameModeList[i] << '\n';
+        for (int i=0; i<GAME_MODE_MENU_COUNT-1; ++i) {
+            cout << ANSI_BOLD_GREEN << gameModeList[i] << '\n';
         }
+        cout << ANSI_BOLD_RED   << gameModeList[GAME_MODE_MENU_COUNT-1] << ANSI_RESET << '\n';
 
-        cout << "\nChọn: ";
     }
 
-    void _exit_game_menu () {
-        cout << "==========================\n";
-        cout << "        BẠN CÓ MUỐN THOÁT KHÔNG?\n";
-        cout << "==========================\n";
+    void _exit_menu () {
+       cout << ANSI_BOLD_CYAN << 
+                "╔══════════════════════════════╗\n";
+        cout << "║   BẠN CÓ MUỐN THOÁT KHÔNG?   ║\n";
+        cout << "╚══════════════════════════════╝\n";
 
         // in ra danh sách lựa chọn
-        for (int i=0; i<EXIT_GAME_COUNT; ++i) {
-            cout << exitGameList[i] << '\n';
-        }
+        cout << ANSI_BOLD_GREEN << exitGameList[0] << '\n';
+        cout << ANSI_BOLD_RED   << exitGameList[1] << ANSI_RESET << '\n';
 
-        cout << "\nChọn: ";
     }
 
     // hàm in ra menu theo con trỏ hàm truyền vào, kiểm tra input 
     int _show_menu (void (*menu)(), int menuCount) {
         int choice;
+        const char* errorMessage = nullptr;
 
         while (true) {
+            clear_screen();
             menu();
-
-            char line[100];
-            cin.getline(line, 100);
-
             
+            cout << '\n';
+            show_error_message(errorMessage);
+
+            cout << ANSI_BOLD_YELLOW << "Chọn: " << ANSI_RESET;
+            
+            char line[10];
+            cin.getline(line, 10);
+
             // nếu nhập không hợp lệ
             if (cin.fail()) {
                 cin.clear(); // fix cin khi nhập không hợp lệ
                 clear_line();
-
-                cout << "\nKhông hợp lệ, nhập lại\n";
-
-                wait_enter();
-                clear_screen();
+                errorMessage = "Đầu vào không hợp lệ, nhập lại";
                 continue;
             }
             
             char tmp;
-            if (sscanf(line, "%d %c", &choice, &tmp) == 1) {
-                if (0 <= choice && choice < menuCount) {
-                    break;
-                }
+            if (sscanf(line, "%d %c", &choice, &tmp) != 1) {
+                errorMessage = "Đầu vào không hợp lệ, nhập lại";
+                continue;
             }
 
-            // nếu nhập không hợp lệ
-            cout << "\nLựa chọn không hợp lệ\n";
+            if (choice < 0 || choice >= menuCount) {
+                errorMessage = "Lựa chọn không hợp lệ";
+                continue;
+            }
 
-            wait_enter();
-            clear_screen();
+            break;
         }
 
         return choice;
@@ -145,10 +146,10 @@ namespace {
         for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
             int stoneCount = get(game.piles, pileIndex);
             
-            cout << "Đống " << pileIndex + 1 << " (" << stoneCount <<"): ";
+            cout << ANSI_BOLD_GREEN << "Đống " << pileIndex + 1 << " (" << stoneCount <<"): ";
 
             for (int i = 0; i < stoneCount; ++i) {
-                cout << "O";
+                cout << ANSI_WHITE << "O" << ANSI_RESET;
             }
 
             cout << '\n';
@@ -159,21 +160,51 @@ namespace {
 
 // ------------------------------
 
-
+// * 
 void clear_line () {
 //    char c;
 //    while (cin.get(c) && c != '\n') {}
     cin.ignore(INF, '\n');
 }
 
-void wait_enter() {
-    cout << "\nNhấn Enter để tiếp tục...";
-    char line[100];
-    cin.getline(line, 100);
+// void wait_enter() {
+//     cout << "\nNhấn phím Enter để tiếp tục...";
+//     char line[10];
+//     cin.getline(line, 10);
 
-    if (cin.fail()) {
-        cin.clear(); 
-        clear_line();
+//     if (cin.fail()) {
+//         cin.clear(); 
+//         clear_line();
+//     }
+// }
+
+void wait_enter() {
+    cout << ANSI_BOLD_CYAN << "\nNhấn phím Enter để tiếp tục..." << ANSI_RESET;
+
+    while (true) {
+        int key = _getch();
+
+        // Enter
+        if (key == '\r') {
+            break;
+        }
+
+        // phím đặc biệt như mũi tên, F1...
+        if (key == 0 || key == 224) {
+            _getch();
+        }
+    }
+}
+
+
+void wait_press () {
+    cout << ANSI_BOLD_CYAN << "\nNhấn phím bất kỳ để tiếp tục...";
+
+    int key = _getch();
+
+    // phím đặc biệt như mũi tên, F1...
+    if (key == 0 || key == 224) {
+        key = _getch();
     }
 }
 
@@ -182,8 +213,17 @@ void clear_screen () {
     system("cls");
 }
 
+ void show_error_message (const char* message) {
+    if (message == nullptr) return;
+    cout << ANSI_BOLD_RED << "[ERROR]: " << ANSI_RED << message << ANSI_RESET << '\n';
+}
 
+// void show_hint_message (const char* message) {
+//     if (message == nullptr) return;
+//     cout << ANSI_YELLOW << message << ANSI_RESET << '\n';
+// }
 
+// * MENU ---------
 
 // in ra menu chính
 MainMenu show_main_menu () {
@@ -195,8 +235,8 @@ GameModeMenu show_game_mode_menu () {
     return (GameModeMenu)_show_menu(_game_mode_menu, GAME_MODE_MENU_COUNT);
 }
 
-ExitGameMenu show_exit_game_menu () {
-    return (ExitGameMenu)_show_menu(_exit_game_menu, EXIT_GAME_COUNT);
+ExitConfirmChoice show_exit_menu () {
+    return (ExitConfirmChoice)_show_menu(_exit_menu, EXIT_CONFIRM_COUNT);
 }
 
 
@@ -204,14 +244,18 @@ ExitGameMenu show_exit_game_menu () {
 
 // * INPUT -----------------------------
 
-void show_input_pile_count (const GameSettings& settings) {
-    cout << "Nhập số lượng đống sỏi (từ " << settings.minPileCount
-        << " tới " << settings.maxPileCount << "): ";
+void show_input_pile_count (const GameSettings& settings, const char* errorMessage) {
+    show_error_message(errorMessage);
+
+    cout << ANSI_BOLD_YELLOW
+         << "Nhập số lượng đống sỏi (từ " << settings.minPileCount
+         << " tới " << settings.maxPileCount << "): " 
+         << ANSI_RESET;
 }
 
 InputStatus input_pile_count (int& pileCount) {
-    char line[100];
-    cin.getline(line, 100);
+    char line[10];
+    cin.getline(line, 10);
 
     if (cin.fail()) {
         cin.clear();
@@ -220,22 +264,31 @@ InputStatus input_pile_count (int& pileCount) {
         return INPUT_TOO_LONG;
     }
 
-    char tmp;
-    if (sscanf(line, "%d %c", &pileCount, &tmp) == 1) {
+    char temp;
+    if (sscanf(line, "%d %c", &pileCount, &temp) == 1) {
+        if (pileCount == 0) {
+            return INPUT_EXIT;
+        }
         return INPUT_OK;
     }
 
+  
     return INPUT_INVALID_FORMAT;
 }
 
-void show_input_player_move (const GameState& game) {
-    cout << "Đến lượt " << actorTextList[game.gameMode][game.currentTurn] << "\n\n";
-    cout << "Nhập đống sỏi và số lượng muốn lấy (ví dụ: 2 5): ";
+void show_input_player_move (const GameState& game, const char* errorMessage) {
+    cout << ANSI_BOLD_BLUE << "Đến lượt "
+         << ANSI_BOLD_MAGENTA << _get_actor_text(game, game.currentTurn) << "\n\n" 
+         << ANSI_RESET;
+
+    show_error_message(errorMessage);
+
+    cout << ANSI_BOLD_YELLOW << "Nhập đống sỏi và số lượng muốn lấy (ví dụ: 2 5): " << ANSI_RESET;
 }
 
 InputStatus input_player_move (Move& move) {
-    char line[100];
-    cin.getline(line, 100);
+    char line[10];
+    cin.getline(line, 10);
 
     if (cin.fail()) {
         cin.clear();
@@ -244,8 +297,16 @@ InputStatus input_player_move (Move& move) {
         return INPUT_TOO_LONG;
     }
 
-    char tmp;
-    if (sscanf(line, "%d %d %c", &move.pileIndex, &move.stoneCount, &tmp) == 2) {
+    int exitValue;
+    char temp;
+
+    if (sscanf(line, "%d %c", &exitValue, &temp) == 1) {
+        if (exitValue == 0) {
+            return INPUT_EXIT;
+        }
+    }
+
+    if (sscanf(line, "%d %d %c", &move.pileIndex, &move.stoneCount, &temp) == 2) {
         --move.pileIndex;
         
         return INPUT_OK;
@@ -259,40 +320,45 @@ InputStatus input_player_move (Move& move) {
 
 // * SHOW ---------------------------------
 
-void show_last_game_state (const GameState& oldGame) {
-    cout << "Trạng thái game trước đó:\n";
+void show_last_game_state (const GameState& lastGame) {
+    cout << ANSI_BOLD_BLUE << "Trạng thái game trước đó:\n" << ANSI_RESET;
 
-    _show_game_state(oldGame);
+    _show_game_state(lastGame);
 
     cout << '\n';
 }
 
 void show_current_game_state (const GameState& game) {
-    cout << "Trạng thái game hiện tại:\n";
+    cout << ANSI_BOLD_BLUE << "Trạng thái game hiện tại:\n" << ANSI_RESET;
 
     _show_game_state(game);
 
     cout << '\n';
 }
 
-void show_last_move (const GameState& game, int lastActor, const Move& lastMove) {
-    cout << actorTextList[game.gameMode][lastActor]
-        << " đã chọn đống " << lastMove.pileIndex + 1
-        << " và bốc " << lastMove.stoneCount << " viên sỏi\n\n";
+void show_last_move (const GameState& lastGame, const Move& lastMove) {
+    cout << ANSI_BOLD_MAGENTA << _get_actor_text(lastGame, lastGame.currentTurn)
+         << ANSI_BOLD_BLUE << " đã chọn đống "
+         << ANSI_BOLD_YELLOW << lastMove.pileIndex + 1
+         << ANSI_BOLD_BLUE << " và bốc "
+         << ANSI_BOLD_YELLOW << lastMove.stoneCount 
+         << ANSI_BOLD_BLUE << " viên sỏi\n\n"
+         << ANSI_RESET;
 }
  
 void show_winner (const GameState& game) {
-    cout << "Kết thúc trò chơi\n";
+    cout << ANSI_BOLD_BLUE << "Kết thúc trò chơi\n";
 
-    int gameMode = game.gameMode;
     int currentTurn = game.currentTurn;
 
     if (game.settings.gameRule == GAME_RULE_LAST_TAKE_LOSE) {
         currentTurn = 1 - currentTurn;
     }
 
-    cout << actorTextList[gameMode][currentTurn] << " thắng\n\n";
+    cout << ANSI_BOLD_MAGENTA << _get_actor_text(game, currentTurn) 
+    << ANSI_BOLD_BLUE << " thắng\n\n" << ANSI_RESET;
 }
+
 // int main () {
 
 //     SetConsoleOutputCP(CP_UTF8);

@@ -2,4 +2,5 @@
 
 #include "game.h"
 
-Move choose_random_move(const GameState& game);
+
+Move choose_ai_move(const GameState& game);
