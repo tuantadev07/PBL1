@@ -1,6 +1,7 @@
 ﻿#include "ui.h"
 #include "ai.h"
 #include "game.h"
+#include "random.h"
 
 #include <windows.h>
 #include <iostream>
@@ -9,7 +10,7 @@ using namespace std;
 
 
 
-MatchConfig create_match_config (GameMode gameMode) {
+MatchConfig create_match_config (GameMode gameMode, AIDifficulty difficulty = AI_DIFFICULTY_VERY_EASY) {
     MatchConfig matchConfig;
     matchConfig.gameMode = gameMode;
 
@@ -20,13 +21,13 @@ MatchConfig create_match_config (GameMode gameMode) {
     else if (gameMode == GAME_MODE_PVAI) {
         matchConfig.players[0].type = PLAYER_TYPE_HUMAN;
         matchConfig.players[1].type = PLAYER_TYPE_AI;
-        matchConfig.players[1].difficulty = AI_DIFFICULTY_VERY_EASY;
+        matchConfig.players[1].difficulty = difficulty;
     }
     else {
         matchConfig.players[0].type = PLAYER_TYPE_AI;
         matchConfig.players[1].type = PLAYER_TYPE_AI;
-        matchConfig.players[0].difficulty = AI_DIFFICULTY_VERY_EASY;
-        matchConfig.players[1].difficulty = AI_DIFFICULTY_VERY_EASY;
+        matchConfig.players[0].difficulty = difficulty;
+        matchConfig.players[1].difficulty = difficulty;
     }
 
     return matchConfig;
@@ -49,7 +50,6 @@ const char* get_input_error_message(InputStatus status) {
 
     return nullptr;
 }
-
 
 bool get_pile_count (const GameSettings& settings, int& pileCount) {
     const char* errorMessage = nullptr;
@@ -117,16 +117,29 @@ bool get_player_move (const GameState& game, Move& move) {
 }
 
 
+// * -------------------------------------
+// * BẮT ĐẦU VÁN GAME
+// * -------------------------------------
+
 void start_game (const MatchConfig& matchConfig, const GameSettings& settings) {
 
+    
+    
     int pileCount;
     if (!get_pile_count(settings, pileCount)) {
         return;
     }
-
+    
     // khởi tạo
     GameState game;
     init_game(game, pileCount, matchConfig, settings);
+
+    int dice = show_roll_animation();
+    game.currentTurn = dice % 2 == 0; // số lẻ thì actor 1 đi trước actor 2
+    cout << ANSI_BOLD_MAGENTA << get_actor_text(game, game.currentTurn) 
+         << ANSI_BOLD_YELLOW << " đi trước!\n"
+         << ANSI_RESET;
+    wait_press();
 
     // thông tin về lượt đi cuối cùng
     bool hasLastMove = false;
@@ -194,9 +207,41 @@ void start_game (const MatchConfig& matchConfig, const GameSettings& settings) {
 
 
 
-// * 
+// * CÁC HÀM LIÊN QUAN ĐẾN NHẬP THÔNG TIN, MENU ...
 
-void run_mode_menu (const GameSettings& settings) {
+void run_game_difficulty(const GameSettings& settings, GameMode gameMode) {
+    while (true) {
+        clear_screen();
+        GameDifficultyMenu difficultyChoice = show_game_difficulty_menu();
+
+        AIDifficulty difficulty;
+
+        if (difficultyChoice == GAME_DIFFICULTY_MENU_VERY_EASY) {
+            difficulty = AI_DIFFICULTY_VERY_EASY;
+        } 
+        else if (difficultyChoice == GAME_DIFFICULTY_MENU_EASY) {
+            difficulty = AI_DIFFICULTY_EASY;
+        } 
+        else if (difficultyChoice == GAME_DIFFICULTY_MENU_MEDIUM) {
+            difficulty = AI_DIFFICULTY_MEDIUM;
+        } 
+        else if (difficultyChoice == GAME_DIFFICULTY_MENU_HARD) {
+            difficulty = AI_DIFFICULTY_HARD;
+        } 
+        else if (difficultyChoice == GAME_DIFFICULTY_MENU_VERY_HARD) {
+            difficulty = AI_DIFFICULTY_VERY_HARD;
+        }
+        else if (difficultyChoice == GAME_DIFFICULTY_MENU_EXIT) {
+            return;
+        } 
+
+        start_game(create_match_config(gameMode, difficulty), settings);
+        return;
+    }
+}
+
+
+void run_game_mode_menu (const GameSettings& settings) {
     while (true) {
         clear_screen();
 
@@ -208,7 +253,7 @@ void run_mode_menu (const GameSettings& settings) {
         }
 
         if (modeChoice == GAME_MODE_MENU_PVAI) {
-            start_game(create_match_config(GAME_MODE_PVAI), settings);
+            run_game_difficulty(settings, GAME_MODE_PVAI);
             continue;
         }
 
@@ -225,7 +270,17 @@ void run_mode_menu (const GameSettings& settings) {
     }
 }
 
-void run_game () {
+int main() {
+    // in ra tiếng Việt
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+
+
+    // * -----------------------------------
+    // * GAME
+    // * -----------------------------------
+
     GameSettings settings = load_game_settings();
 
     // game loop
@@ -237,26 +292,19 @@ void run_game () {
 
         // bắt đầu game
         if (choice == MAIN_MENU_START) {
-            run_mode_menu(settings);
+            run_game_mode_menu(settings);
             continue;
         }
 
         // thoát game
         if (choice == MAIN_MENU_EXIT) {
             if (confirm_exit() == EXIT_CONFIRM_YES) 
-                return;
+                break;
             else 
                 continue;
         }
     }
-}
 
-int main() {
-    // in ra tiếng Việt
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-
-    run_game();
     
     return 0;
 }

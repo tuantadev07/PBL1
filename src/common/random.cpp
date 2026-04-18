@@ -10,7 +10,7 @@
 int random_int (int left, int right) {
 
     // std::random_device seed;
-    // static std::mt19937 gen(seed());
+    // std::mt19937 gen(seed());
 
     static std::mt19937 genrator(std::random_device{}());
     
@@ -21,4 +21,8 @@ int random_int (int left, int right) {
     std::uniform_int_distribution<int> uni(left, right);
 
     return uni(genrator);    
+}
+
+int gieo_xuc_xac () {
+    return random_int(1, 6);
 }

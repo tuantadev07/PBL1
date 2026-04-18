@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "array.h"
 
 
 namespace {
@@ -12,7 +12,7 @@ namespace {
         return newArr;
     }
 
-    void _resize (vector_int& v) {
+    void _resize (Array& v) {
         v.capacity *= 2;
         
         int* newData = _copy_array (v.data, v.size, v.capacity);
@@ -23,19 +23,19 @@ namespace {
 }
 
 
-void init_vector (vector_int& v) {
-    free(v);
+void init_array (Array& v) {
+    free_array(v);
 
     v.capacity = 2;
     v.size = 0;
     v.data = new int[v.capacity];
 }
 
-void init_vector (vector_int& v, int size) {
-    free(v);
+void init_array (Array& v, int size) {
+    free_array(v);
 
     if (size <= 0) {
-        init_vector(v);
+        init_array(v);
         return;
     }
 
@@ -48,11 +48,11 @@ void init_vector (vector_int& v, int size) {
     }
 }
 
-void init_vector (vector_int& v, int size, int value) {
-    free(v);
+void init_array (Array& v, int size, int value) {
+    free_array(v);
 
     if (size <= 0) {
-        init_vector(v);
+        init_array(v);
         return;
     }
 
@@ -65,36 +65,36 @@ void init_vector (vector_int& v, int size, int value) {
     }
 }
 
-vector_int create_vector() {
-    vector_int v;
-    init_vector(v);
+Array create_array() {
+    Array v;
+    init_array(v);
 
     return v;
 }
 
-vector_int create_vector(int size) {
-    vector_int v;
-    init_vector(v, size);
+Array create_array(int size) {
+    Array v;
+    init_array(v, size);
 
     return v;
 }
 
-vector_int create_vector(int size, int value) {
-    vector_int v;
-    init_vector(v, size, value);
+Array create_array(int size, int value) {
+    Array v;
+    init_array(v, size, value);
     
     return v;
 }
 
 
-void free (vector_int& v) {
+void free_array (Array& v) {
     delete[] v.data;
     v.data = nullptr;
     v.size = 0;
     v.capacity = 0;
 }
 
-void reserve (vector_int& v, int newCapacity) {
+void reserve (Array& v, int newCapacity) {
     if (newCapacity < 2) {
         newCapacity = 2;
     }
@@ -109,8 +109,8 @@ void reserve (vector_int& v, int newCapacity) {
     v.data = newData;
 }
 
-vector_int copy (const vector_int& v) {
-    vector_int newV;
+Array copy (const Array& v) {
+    Array newV;
 
     newV.size = v.size;
     newV.capacity = v.capacity;
@@ -119,11 +119,11 @@ vector_int copy (const vector_int& v) {
     return newV;
 }
 
-int get (const vector_int& v, int index) {
+int get (const Array& v, int index) {
     return v.data[index];
 }
 
-bool set (vector_int& v, int index, int value) {
+bool set (Array& v, int index, int value) {
     if (index < 0  || index >= v.size) {
         return false;
     }
@@ -132,9 +132,9 @@ bool set (vector_int& v, int index, int value) {
     return true;
 }
 
-void push_back (vector_int& v, int value) {
+void push_back (Array& v, int value) {
     if (v.data == nullptr) {
-        init_vector(v);
+        init_array(v);
     }
     if (v.size == v.capacity) {
         _resize(v);
@@ -143,7 +143,7 @@ void push_back (vector_int& v, int value) {
     v.data[v.size++] = value;
 }
 
-void pop_back (vector_int& v) {
+void pop_back (Array& v) {
     if (v.size > 0) {
         --v.size;
     }

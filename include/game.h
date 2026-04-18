@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector.h"
+#include "array.h"
 #include "game_settings.h"
 
 
@@ -10,7 +10,7 @@ struct Move {
 };
 
 struct GameState {
-    vector_int piles;
+    Array piles;
     MatchConfig matchConfig;
     GameSettings settings;
     int currentTurn = 0;
