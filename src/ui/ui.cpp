@@ -1,4 +1,6 @@
 #include "ui.h"
+#include "random.h"
+#include "windows.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -9,11 +11,17 @@ using std::cin;
 
 
 
+// * =================================================
+// *                HÀM NỘI BỘ CÙA FILE
+// * =================================================
+
 namespace {
+
+    // * -------------------------------
+    // *          DỮ LIỆU CẦN
+    // * -------------------------------
+
     const int INF = (int)1e9;
-
-
-    // 
 
     const char* mainMenuList[MAIN_MENU_COUNT] = {
         "1. Bắt đầu trò chơi",
@@ -27,32 +35,23 @@ namespace {
         "0. Quay lại"
     };
 
+    const char* gameDifficultyList[GAME_DIFFICULTY_MENU_COUNT] = {
+        "1. Rất dễ",
+        "2. Dễ",
+        "3. Trung bình",
+        "4. Khó",
+        "5. Rất khó",
+        "0. Quay lại"
+    };
+
     const char* exitGameList[EXIT_CONFIRM_COUNT] = {
         "1. Có",
         "0. Không"
     };
 
-
-    const char* _get_actor_text(const GameState& game, int actorIndex) {
-        const PlayerConfig& p0 = game.matchConfig.players[0];
-        const PlayerConfig& p1 = game.matchConfig.players[1];
-
-        if (p0.type == PLAYER_TYPE_HUMAN && p1.type == PLAYER_TYPE_AI) {
-            return actorIndex == 0 ? "Người chơi" : "AI";
-        }
-
-        if (p0.type == PLAYER_TYPE_AI && p1.type == PLAYER_TYPE_AI) {
-            return actorIndex == 0 ? "AI 1" : "AI 2";
-        }
-
-        return actorIndex == 0 ? "Người chơi 1" : "Người chơi 2";
-    }
-
-
-
-
-
-    // * hàm in ra menu
+    // * ------------------------------------
+    // *        HÀM IN GIAO DIỆN/MENU
+    // * -----------------------------------
     
     void _main_menu () {
         cout << ANSI_BOLD_CYAN << 
@@ -82,6 +81,22 @@ namespace {
         cout << ANSI_BOLD_RED   << gameModeList[GAME_MODE_MENU_COUNT-1] << ANSI_RESET << '\n';
 
     }
+
+    void _game_difficulty_menu () {
+        cout << ANSI_BOLD_CYAN << 
+                "╔══════════════════════════════╗\n";
+        cout << "║         CHỌN ĐỘ KHÓ AI       ║\n";
+        cout << "╚══════════════════════════════╝\n";
+
+        // in ra danh sách lựa chọn
+        for (int i=0; i<GAME_DIFFICULTY_MENU_COUNT-1; ++i) {
+            cout << ANSI_BOLD_GREEN << gameDifficultyList[i] << '\n';
+        }
+        cout << ANSI_BOLD_RED   << gameDifficultyList[GAME_DIFFICULTY_MENU_COUNT-1] << ANSI_RESET << '\n';
+
+    }
+
+
 
     void _exit_menu () {
        cout << ANSI_BOLD_CYAN << 
@@ -140,25 +155,39 @@ namespace {
 
 
 
-    // * hàm in ra UI lúc chơi
+    // * ------------------------------------
+    // *        HÀM IN RA UI TRONG LÚC CHƠI
+    // * ------------------------------------
     
     void _show_game_state (const GameState& game) {
         for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
             int stoneCount = get(game.piles, pileIndex);
             
-            cout << ANSI_BOLD_GREEN << "Đống " << pileIndex + 1 << " (" << stoneCount <<"): ";
+            cout << ANSI_BOLD_GREEN << "Đống " << pileIndex + 1 << " (" << stoneCount <<" viên): ";
+            if (stoneCount == 0) {
+                cout << ANSI_BOLD_BLUE << "  Hết sỏi\n" << ANSI_RESET;
+                continue; 
+            }
+            if (stoneCount < 10) cout << "  ";
+            else cout << " ";
 
             for (int i = 0; i < stoneCount; ++i) {
-                cout << ANSI_WHITE << "O" << ANSI_RESET;
+                cout << ANSI_CYAN << "O" << ANSI_RESET;
             }
 
             cout << '\n';
         }
     }
-
 }
 
-// ------------------------------
+// * =================================================
+// *                   HÀM PUBLIC                   
+// * =================================================
+
+
+// * ----------------------------------------
+// *             HÀM TIỆN ÍCH
+// * ----------------------------------------
 
 // * 
 void clear_line () {
@@ -179,7 +208,7 @@ void clear_line () {
 // }
 
 void wait_enter() {
-    cout << ANSI_BOLD_CYAN << "\nNhấn phím Enter để tiếp tục..." << ANSI_RESET;
+    cout << ANSI_BOLD_CYAN << "\nNhấn phím Enter để tiếp tục..." << ANSI_RESET << std::flush;
 
     while (true) {
         int key = _getch();
@@ -189,7 +218,7 @@ void wait_enter() {
             break;
         }
 
-        // phím đặc biệt như mũi tên, F1...
+        // phím đặc biệt như mũi tên
         if (key == 0 || key == 224) {
             _getch();
         }
@@ -198,11 +227,11 @@ void wait_enter() {
 
 
 void wait_press () {
-    cout << ANSI_BOLD_CYAN << "\nNhấn phím bất kỳ để tiếp tục...";
+    cout << ANSI_BOLD_CYAN << "\nNhấn phím bất kỳ để tiếp tục..." << ANSI_RESET << std::flush;
 
     int key = _getch();
 
-    // phím đặc biệt như mũi tên, F1...
+    // phím đặc biệt như mũi tên
     if (key == 0 || key == 224) {
         key = _getch();
     }
@@ -213,17 +242,33 @@ void clear_screen () {
     system("cls");
 }
 
- void show_error_message (const char* message) {
-    if (message == nullptr) return;
-    cout << ANSI_BOLD_RED << "[ERROR]: " << ANSI_RED << message << ANSI_RESET << '\n';
-}
+
 
 // void show_hint_message (const char* message) {
 //     if (message == nullptr) return;
 //     cout << ANSI_YELLOW << message << ANSI_RESET << '\n';
 // }
 
-// * MENU ---------
+const char* get_actor_text(const GameState& game, int actorIndex) {
+    const PlayerConfig& p0 = game.matchConfig.players[0];
+    const PlayerConfig& p1 = game.matchConfig.players[1];
+
+    if (p0.type == PLAYER_TYPE_HUMAN && p1.type == PLAYER_TYPE_AI) {
+        return actorIndex == 0 ? "Người chơi" : "AI";
+    }
+
+    if (p0.type == PLAYER_TYPE_AI && p1.type == PLAYER_TYPE_AI) {
+        return actorIndex == 0 ? "AI 1" : "AI 2";
+    }
+
+    return actorIndex == 0 ? "Người chơi 1" : "Người chơi 2";
+}
+
+
+
+// * -------------------------------
+// *          SHOW MENU
+// * ------------------------------
 
 // in ra menu chính
 MainMenu show_main_menu () {
@@ -235,6 +280,10 @@ GameModeMenu show_game_mode_menu () {
     return (GameModeMenu)_show_menu(_game_mode_menu, GAME_MODE_MENU_COUNT);
 }
 
+GameDifficultyMenu show_game_difficulty_menu () {
+    return (GameDifficultyMenu)_show_menu(_game_difficulty_menu, GAME_DIFFICULTY_MENU_COUNT);
+}
+
 ExitConfirmChoice show_exit_menu () {
     return (ExitConfirmChoice)_show_menu(_exit_menu, EXIT_CONFIRM_COUNT);
 }
@@ -242,7 +291,10 @@ ExitConfirmChoice show_exit_menu () {
 
 
 
-// * INPUT -----------------------------
+// * -----------------------------------
+// *            INPUT CHOICE
+// * -----------------------------------
+
 
 void show_input_pile_count (const GameSettings& settings, const char* errorMessage) {
     show_error_message(errorMessage);
@@ -277,12 +329,11 @@ InputStatus input_pile_count (int& pileCount) {
 }
 
 void show_input_player_move (const GameState& game, const char* errorMessage) {
-    cout << ANSI_BOLD_BLUE << "Đến lượt "
-         << ANSI_BOLD_MAGENTA << _get_actor_text(game, game.currentTurn) << "\n\n" 
+    cout << ANSI_BOLD_CYAN << "Đến lượt "
+         << ANSI_BOLD_MAGENTA << get_actor_text(game, game.currentTurn) << "\n\n" 
          << ANSI_RESET;
 
     show_error_message(errorMessage);
-
     cout << ANSI_BOLD_YELLOW << "Nhập đống sỏi và số lượng muốn lấy (ví dụ: 2 5): " << ANSI_RESET;
 }
 
@@ -317,8 +368,28 @@ InputStatus input_player_move (Move& move) {
 
 
 
+// * -------------------------------------
+// *              SHOW                               
+// * -------------------------------------
 
-// * SHOW ---------------------------------
+int show_roll_animation() {
+    cout << ANSI_BOLD_BLUE << "Đang gieo xúc xắc: " << std::flush;
+
+    int result = 1;
+    for (int i = 0; i < 18; ++i) {
+        result = gieo_xuc_xac();
+        cout << ANSI_BOLD_BLUE << "\rĐang gieo xúc xắc: " << ANSI_BOLD_YELLOW << result << "   " << std::flush;
+        Sleep(120); 
+    }
+    
+    cout << ANSI_BOLD_BLUE << "\rKết quả xúc xắc: " << ANSI_BOLD_YELLOW << result << "            \n" << ANSI_RESET;
+    return result;
+}
+
+void show_error_message (const char* message) {
+    if (message == nullptr) return;
+    cout << ANSI_BOLD_RED << "[ERROR]: " << ANSI_RED << message << ANSI_RESET << '\n';
+}
 
 void show_last_game_state (const GameState& lastGame) {
     cout << ANSI_BOLD_BLUE << "Trạng thái game trước đó:\n" << ANSI_RESET;
@@ -337,7 +408,7 @@ void show_current_game_state (const GameState& game) {
 }
 
 void show_last_move (const GameState& lastGame, const Move& lastMove) {
-    cout << ANSI_BOLD_MAGENTA << _get_actor_text(lastGame, lastGame.currentTurn)
+    cout << ANSI_BOLD_MAGENTA << get_actor_text(lastGame, lastGame.currentTurn)
          << ANSI_BOLD_BLUE << " đã chọn đống "
          << ANSI_BOLD_YELLOW << lastMove.pileIndex + 1
          << ANSI_BOLD_BLUE << " và bốc "
@@ -347,7 +418,7 @@ void show_last_move (const GameState& lastGame, const Move& lastMove) {
 }
  
 void show_winner (const GameState& game) {
-    cout << ANSI_BOLD_BLUE << "Kết thúc trò chơi\n";
+    cout << ANSI_BOLD_CYAN << "Kết thúc trò chơi\n";
 
     int currentTurn = game.currentTurn;
 
@@ -355,8 +426,8 @@ void show_winner (const GameState& game) {
         currentTurn = 1 - currentTurn;
     }
 
-    cout << ANSI_BOLD_MAGENTA << _get_actor_text(game, currentTurn) 
-    << ANSI_BOLD_BLUE << " thắng\n\n" << ANSI_RESET;
+    cout << ANSI_BOLD_MAGENTA << get_actor_text(game, currentTurn) 
+    << ANSI_BOLD_YELLOW << " thắng\n\n" << ANSI_RESET;
 }
 
 // int main () {

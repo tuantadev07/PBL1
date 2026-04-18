@@ -69,6 +69,15 @@ enum GameModeMenu {
     GAME_MODE_MENU_COUNT
 };
 
+enum GameDifficultyMenu {
+    GAME_DIFFICULTY_MENU_EXIT = 0,
+    GAME_DIFFICULTY_MENU_VERY_EASY = 1,
+    GAME_DIFFICULTY_MENU_EASY = 2,
+    GAME_DIFFICULTY_MENU_MEDIUM = 3,
+    GAME_DIFFICULTY_MENU_HARD = 4,
+    GAME_DIFFICULTY_MENU_VERY_HARD = 5,
+    GAME_DIFFICULTY_MENU_COUNT
+};
 
 enum InputStatus {
     INPUT_OK = 0,
@@ -91,8 +100,9 @@ void wait_press ();
 // xóa màn hình
 void clear_screen ();
 
-void show_error_message (const char* message);
-void show_hint_message (const char* message);
+const char* get_actor_text (const GameState& game, int actorIndex);
+
+
 
 
 
@@ -101,6 +111,8 @@ MainMenu show_main_menu ();
 
 // in ra menu chế độ chơi và trả về lựa chọn
 GameModeMenu show_game_mode_menu ();
+
+GameDifficultyMenu show_game_difficulty_menu ();
 
 // in ra menu lúc xác nhận thoát game
 ExitConfirmChoice show_exit_menu ();
@@ -117,6 +129,11 @@ void show_input_player_move (const GameState& game, const char* errorMessage = n
 // lấy nước đi và trã về mã lỗi
 InputStatus input_player_move (Move& move);
 
+
+int show_roll_animation();
+
+void show_error_message (const char* message);
+void show_hint_message (const char* message);
 
 //hiển thị trạng thái game
 void show_current_game_state (const GameState& game);

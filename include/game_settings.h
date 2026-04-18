@@ -4,19 +4,16 @@ enum GameMode {
     GAME_MODE_PVP = 0,
     GAME_MODE_PVAI,
     GAME_MODE_AIVAI,
-    GAME_MODE_COUNT
 };
 
 enum GameRule {
     GAME_RULE_LAST_TAKE_LOSE = 0,
     GAME_RULE_LAST_TAKE_WIN,
-    GAME_RULE_COUNT
 };
 
 enum PlayerType {
     PLAYER_TYPE_HUMAN = 0,
     PLAYER_TYPE_AI,
-    PLAYER_TYPE_COUNT
 };
 
 enum AIDifficulty {
@@ -25,7 +22,6 @@ enum AIDifficulty {
     AI_DIFFICULTY_MEDIUM,
     AI_DIFFICULTY_HARD,
     AI_DIFFICULTY_VERY_HARD,
-    AI_DIFFICULTY_COUNT
 };
 
 struct PlayerConfig {
@@ -39,7 +35,7 @@ struct MatchConfig {
 };
 
 struct GameSettings {
-    int minPileCount = 2;
+    int minPileCount = 1;
     int maxPileCount = 10;
 
     int minInitialStoneCount = 5;

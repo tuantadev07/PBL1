@@ -4,7 +4,7 @@
 
 
 void init_game (GameState& game, int pileCount, const MatchConfig& matchConfig, const GameSettings& settings) {
-    init_vector(game.piles, pileCount);
+    init_array(game.piles, pileCount);
 
     game.matchConfig = matchConfig;
     game.settings = settings;
@@ -23,7 +23,7 @@ void init_game (GameState& game, int pileCount, const MatchConfig& matchConfig, 
 }
 
 void free_game (GameState& game) {
-    free(game.piles);
+    free_array(game.piles);
     game.totalStones = 0;
 }
 

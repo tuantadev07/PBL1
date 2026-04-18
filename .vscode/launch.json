@@ -36,6 +36,21 @@
                                "MIMode":  "gdb",
                                "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
                                "preLaunchTask":  "03) Build all src -\u003e nim-game.exe"
-                           }
+                           },
+                           {
+                            "name": "Debug active file",
+                            "type": "cppdbg",
+                            "request": "launch",
+                            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                            "args": [],
+                            "stopAtEntry": false,
+                            "cwd": "${workspaceFolder}",
+                            "environment": [],
+                            "externalConsole": true,
+                            "MIMode": "gdb",
+                            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+                            "preLaunchTask": "04) Build active file -> active.exe"
+                            }
+
                        ]
 }

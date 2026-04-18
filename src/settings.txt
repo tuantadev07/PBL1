@@ -1,4 +1,4 @@
-minPileCount 2
+minPileCount 1
 maxPileCount 10
 minInitialStoneCount 5
 maxInitialStoneCount 10
