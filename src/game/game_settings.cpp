@@ -1,4 +1,4 @@
-#include "game_settings.h"
+#include "game/game_settings.h"
 
 #include <fstream>
 #include <string.h>

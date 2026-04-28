@@ -1,7 +1,7 @@
 #pragma once
 
-#include "array.h"
-#include "game_settings.h"
+#include "common/array.h"
+#include "game/game_settings.h"
 
 
 struct Move {

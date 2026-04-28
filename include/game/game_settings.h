@@ -26,7 +26,8 @@ enum AIDifficulty {
 
 struct PlayerConfig {
     PlayerType type = PLAYER_TYPE_HUMAN;
-    AIDifficulty difficulty = AI_DIFFICULTY_VERY_EASY;
+    AIDifficulty difficulty = AI_DIFFICULTY_MEDIUM;
+    char name[32] = "";
 };
 
 struct MatchConfig {
