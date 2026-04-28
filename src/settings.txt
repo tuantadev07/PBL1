@@ -1,5 +1,5 @@
 minPileCount 1
-maxPileCount 10
+maxPileCount 5
 minInitialStoneCount 5
 maxInitialStoneCount 10
 maxTakePerMove 0

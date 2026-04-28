@@ -1,6 +1,5 @@
-﻿#include "game.h"
-
-#include "random.h"
+﻿#include "game/game.h"
+#include "common/random.h"
 
 
 void init_game (GameState& game, int pileCount, const MatchConfig& matchConfig, const GameSettings& settings) {

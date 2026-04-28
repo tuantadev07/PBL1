@@ -1,10 +1,14 @@
-#include "random.h"
-
-
-#include "common_utils.h"
+#include "common/random.h"
 
 #include <random>
 
+namespace {
+    void _swap_int (int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+} // namespace 
 
 
 int random_int (int left, int right) {
@@ -15,7 +19,7 @@ int random_int (int left, int right) {
     static std::mt19937 genrator(std::random_device{}());
     
     if (left > right) {
-        swap_int(left, right);
+        _swap_int(left, right);
     }
     
     std::uniform_int_distribution<int> uni(left, right);

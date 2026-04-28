@@ -1,5 +1,5 @@
-#include "ai.h"
-#include "random.h"
+#include "ai/ai.h"
+#include "common/random.h"
 
 
 // * =================================================
@@ -88,6 +88,45 @@ namespace {
         return false;
     }
 
+    // * bốc cuối win + giới hạn
+    bool _find_optimal_move_normal_limited(const GameState& game, Move& outMove) {
+        const int maxTakePerMove = game.settings.maxTakePerMove;
+        if (maxTakePerMove <= 0) {
+            return _find_optimal_move_normal_unlimited(game, outMove);
+        }
+
+        int nimSum = 0;
+        for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
+            nimSum ^= (get(game.piles, pileIndex) % (maxTakePerMove + 1));
+        }
+
+        if (nimSum == 0) {
+            return false;
+        }
+
+        for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
+            int stonesInPile = get(game.piles, pileIndex);
+            if (stonesInPile <= 0) continue;
+
+            const int reducedPile = stonesInPile % (maxTakePerMove + 1);
+            const int targetReducedPile = reducedPile ^ nimSum;
+
+            if (targetReducedPile >= reducedPile) {
+                continue;
+            }
+
+            const int take = reducedPile - targetReducedPile;
+            if (take <= 0 || take > _get_take_limit(game, pileIndex)) {
+                continue;
+            }
+
+            outMove = {pileIndex, take};
+            return true;
+        }
+
+        return false;
+    }
+
     // * bốc cuối thua + không giới hạn
     bool _find_optimal_move_misere_unlimited(const GameState& game, Move& outMove) {
        int onesCount = 0;
@@ -143,18 +182,93 @@ namespace {
         return _find_optimal_move_normal_unlimited(game, outMove);
     }
 
+    // * bốc cuối thua + giới hạn
+    bool _find_optimal_move_misere_limited(const GameState& game, Move& outMove) {
+        const int maxTakePerMove = game.settings.maxTakePerMove;
+        if (maxTakePerMove <= 0) {
+            return _find_optimal_move_misere_unlimited(game, outMove);
+        }
+
+        Move safeFallback = {-1, 0};
+        Move forcedLoss = {-1, 0};
+
+        for (int pileIndex = 0; pileIndex < game.piles.size; ++pileIndex) {
+            int stonesInPile = get(game.piles, pileIndex);
+            if (stonesInPile <= 0) continue;
+
+            const int takeLimit = _get_take_limit(game, pileIndex);
+            for (int take = 1; take <= takeLimit; ++take) {
+                const int newTotal = game.totalStones - take;
+
+                if (newTotal == 1) {
+                    outMove = {pileIndex, take};
+                    return true;
+                }
+
+                if (newTotal == 0) {
+                    if (forcedLoss.pileIndex == -1 || take < forcedLoss.stoneCount) {
+                        forcedLoss = {pileIndex, take};
+                    }
+                    continue;
+                }
+
+                if (safeFallback.pileIndex == -1) {
+                    safeFallback = {pileIndex, take};
+                }
+
+                int onesCount = 0;
+                int bigCount = 0;
+
+                for (int otherPileIndex = 0; otherPileIndex < game.piles.size; ++otherPileIndex) {
+                    int stonesAfterMove = get(game.piles, otherPileIndex);
+                    if (otherPileIndex == pileIndex) {
+                        stonesAfterMove -= take;
+                    }
+
+                    if (stonesAfterMove <= 0) continue;
+                    if (stonesAfterMove == 1) ++onesCount;
+                    else ++bigCount;
+                }
+
+                if (bigCount == 0 && (onesCount % 2 == 1)) {
+                    outMove = {pileIndex, take};
+                    return true;
+                }
+            }
+        }
+
+        Move normalMove;
+        if (_find_optimal_move_normal_limited(game, normalMove) &&
+            is_valid_move(game, normalMove) &&
+            (game.totalStones - normalMove.stoneCount > 0)) {
+            outMove = normalMove;
+            return true;
+        }
+
+        if (safeFallback.pileIndex != -1) {
+            outMove = safeFallback;
+            return true;
+        }
+
+        if (forcedLoss.pileIndex != -1) {
+            outMove = forcedLoss;
+            return true;
+        }
+
+        return false;
+    }
+
     bool _find_optimal_move(const GameState& game, Move& outMove) {
         bool isUnlimited = (game.settings.maxTakePerMove <= 0); // Có giới hạn hay không
 
         if (game.settings.gameRule == GAME_RULE_LAST_TAKE_WIN) { // Luật bốc cuối thắng
             if (isUnlimited) return _find_optimal_move_normal_unlimited(game, outMove);
-            // return _find_optimal_move_normal_limited(game, outMove);
+            return _find_optimal_move_normal_limited(game, outMove);
         }
 
         // luật bốc cuối thua
         if (isUnlimited) return _find_optimal_move_misere_unlimited(game, outMove);
-        // return _find_optimal_move_misere_limited(game, outMove);
-        return _find_must_play_move(game, outMove);
+        return _find_optimal_move_misere_limited(game, outMove);
     }
 
     Move _choose_random_move(const GameState& game, int stoneCount = -1) {
@@ -205,7 +319,8 @@ namespace {
 Move choose_ai_move(const GameState& game) {
     AIDifficulty difficulty = game.matchConfig.players[game.currentTurn].difficulty;
 
-    if (difficulty != AI_DIFFICULTY_VERY_EASY) {
+    if (difficulty != AI_DIFFICULTY_VERY_EASY && 
+        difficulty != AI_DIFFICULTY_EASY) {
         Move mustMove;
         if (_find_must_play_move(game, mustMove)) {
             return mustMove;
