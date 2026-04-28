@@ -8,6 +8,9 @@
                       "args":  [
                             "-std=c++17",
                             "-g",
+                            "-finput-charset=UTF-8",
+                            "-fexec-charset=UTF-8",
+                            "-IC:\\raylib\\raylib\\src",
                             "-I${workspaceFolder}\\include",
                             "-I${workspaceFolder}",
                             "-c",
@@ -30,7 +33,12 @@
                             "-g",
                             "${workspaceFolder}\\build\\*.o",
                             "-o",
-                            "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                            "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                            "-LC:\\raylib\\raylib\\src",
+                            "-lraylib",
+                            "-lopengl32",
+                            "-lgdi32",
+                            "-lwinmm"
                         ],
                       "options":  {
                             "cwd":  "${workspaceFolder}"
@@ -51,7 +59,7 @@
                       "args":  [
                             "/d",
                             "/c",
-                            "(if not exist \"${workspaceFolder}\\build\" mkdir \"${workspaceFolder}\\build\") \u0026\u0026 del /q \"${workspaceFolder}\\build\\*.o\" 2\u003enul \u0026\u0026 (for /r \"${workspaceFolder}\\src\" %f in (*.cpp) do (\"C:\\MinGW\\bin\\g++.exe\" -std=c++17 -g -I\"${workspaceFolder}\\include\" -I\"${workspaceFolder}\" -c \"%f\" -o \"${workspaceFolder}\\build\\%~nf.o\" || exit /b 1)) \u0026\u0026 \"C:\\MinGW\\bin\\g++.exe\" -g -static -static-libgcc -static-libstdc++ ${workspaceFolder}\\build\\*.o -o \"${workspaceFolder}\\nim-game.exe\""
+                            "(if not exist \"${workspaceFolder}\\build\" mkdir \"${workspaceFolder}\\build\") \u0026\u0026 del /q \"${workspaceFolder}\\build\\*.o\" 2\u003enul \u0026\u0026 (for /r \"${workspaceFolder}\\src\" %f in (*.cpp) do (\"C:\\MinGW\\bin\\g++.exe\" -std=c++17 -g -finput-charset=UTF-8 -fexec-charset=UTF-8 -I\"C:\\raylib\\raylib\\src\" -I\"${workspaceFolder}\\include\" -I\"${workspaceFolder}\" -c \"%f\" -o \"${workspaceFolder}\\build\\%~nf.o\" || exit /b 1)) \u0026\u0026 \"C:\\MinGW\\bin\\g++.exe\" -g -static -static-libgcc -static-libstdc++ ${workspaceFolder}\\build\\*.o -o \"${workspaceFolder}\\nim-game.exe\" -L\"C:\\raylib\\raylib\\src\" -lraylib -lopengl32 -lgdi32 -lwinmm"
                         ],
                       "options":  {
                             "cwd":  "${workspaceFolder}"
@@ -67,17 +75,55 @@
                     "args": [
                         "-std=c++17",
                         "-g",
+                        "-finput-charset=UTF-8",
+                        "-fexec-charset=UTF-8",
+                        "-IC:\\raylib\\raylib\\src",
                         "-I${workspaceFolder}\\include",
                         "-I${workspaceFolder}",
                         "${file}",
                         "-o",
-                        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                        "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                        "-LC:\\raylib\\raylib\\src",
+                        "-lraylib",
+                        "-lopengl32",
+                        "-lgdi32",
+                        "-lwinmm"
                     ],
                     "options": {
                         "cwd": "${workspaceFolder}"
                     },
                     "problemMatcher": ["$gcc"]
+                },
+               
+                {
+                    "label": "05) Build & Run active file",
+                    "type": "shell", 
+                    "command": "start",
+                    "args": [
+                        "cmd",
+                        "/c",
+                        "\"${fileBasenameNoExtension}.exe && pause\""
+                        // "\"${fileBasenameNoExtension}.exe\""
+                    ],
+                    "options": {
+                        "cwd": "${fileDirname}",
+                        "shell": {
+                            "executable": "cmd.exe",
+                            "args": ["/d", "/c"]
+                        }
+                    },
+                    "presentation": {
+                        // "echo": false,          // Không hiện lại dòng lệnh cmd dài dòng
+                        // "reveal": "never",      // Không bật Terminal VS Code lên (vì đã có cửa sổ start)
+                        // "focus": false,
+                        "panel": "shared",
+                        // "clear": true
+                    },
+                    "dependsOn": "04) Build active file -> active.exe",
+                    "problemMatcher": ["$gcc"]
                 }
+
+
     ]
 }
 

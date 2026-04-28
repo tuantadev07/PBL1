@@ -1,0 +1,54 @@
+Date : 2026-04-23 11:07:33
+Directory : d:\code\project\PBL1-NIM-Game\src
+Total : 20 files,  1120 codes, 97 comments, 391 blanks, all 1608 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         20 |      1,120 |         97 |        391 |      1,608 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                             |         20 |      1,120 |         97 |        391 |      1,608 |
+| . (Files)                                                     |          1 |         23 |          0 |          8 |         31 |
+| ai                                                            |          1 |        159 |         23 |         45 |        227 |
+| app                                                           |          1 |         32 |          0 |          5 |         37 |
+| assets                                                        |          1 |        109 |          1 |         36 |        146 |
+| audio                                                         |          1 |         15 |          0 |          5 |         20 |
+| common                                                        |          3 |        132 |          2 |         54 |        188 |
+| game                                                          |          2 |         94 |          0 |         27 |        121 |
+| render                                                        |          1 |          4 |          1 |          2 |          7 |
+| screens                                                       |          5 |        217 |          9 |         65 |        291 |
+| ui                                                            |          4 |        335 |         61 |        144 |        540 |
++---------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                      | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------+----------+------------+------------+------------+------------+
+| d:\code\project\PBL1-NIM-Game\src\ai\ai.cpp                   | C++      |        159 |         23 |         45 |        227 |
+| d:\code\project\PBL1-NIM-Game\src\app\game_app.cpp            | C++      |         32 |          0 |          5 |         37 |
+| d:\code\project\PBL1-NIM-Game\src\assets\game_assets.cpp      | C++      |        109 |          1 |         36 |        146 |
+| d:\code\project\PBL1-NIM-Game\src\audio\audio_manager.cpp     | C++      |         15 |          0 |          5 |         20 |
+| d:\code\project\PBL1-NIM-Game\src\common\array.cpp            | C++      |        112 |          0 |         38 |        150 |
+| d:\code\project\PBL1-NIM-Game\src\common\common_utils.cpp     | C++      |          6 |          0 |          4 |         10 |
+| d:\code\project\PBL1-NIM-Game\src\common\random.cpp           | C++      |         14 |          2 |         12 |         28 |
+| d:\code\project\PBL1-NIM-Game\src\game\game.cpp               | C++      |         61 |          0 |         19 |         80 |
+| d:\code\project\PBL1-NIM-Game\src\game\game_settings.cpp      | C++      |         33 |          0 |          8 |         41 |
+| d:\code\project\PBL1-NIM-Game\src\main.cpp                    | C++      |         23 |          0 |          8 |         31 |
+| d:\code\project\PBL1-NIM-Game\src\render\theme.cpp            | C++      |          4 |          1 |          2 |          7 |
+| d:\code\project\PBL1-NIM-Game\src\screens\screen_intro.cpp    | C++      |         81 |          9 |         26 |        116 |
+| d:\code\project\PBL1-NIM-Game\src\screens\screen_menu.cpp     | C++      |         57 |          0 |         14 |         71 |
+| d:\code\project\PBL1-NIM-Game\src\screens\screen_pause.cpp    | C++      |         25 |          0 |          7 |         32 |
+| d:\code\project\PBL1-NIM-Game\src\screens\screen_play.cpp     | C++      |         39 |          0 |         12 |         51 |
+| d:\code\project\PBL1-NIM-Game\src\screens\screen_settings.cpp | C++      |         15 |          0 |          6 |         21 |
+| d:\code\project\PBL1-NIM-Game\src\ui\ui.cpp                   | C++      |        260 |         61 |        123 |        444 |
+| d:\code\project\PBL1-NIM-Game\src\ui\ui_button.cpp            | C++      |         44 |          0 |         14 |         58 |
+| d:\code\project\PBL1-NIM-Game\src\ui\ui_layout.cpp            | C++      |          6 |          0 |          3 |          9 |
+| d:\code\project\PBL1-NIM-Game\src\ui\ui_styles.cpp            | C++      |         25 |          0 |          4 |         29 |
+| Total                                                         |          |      1,120 |         97 |        391 |      1,608 |
++---------------------------------------------------------------+----------+------------+------------+------------+------------+

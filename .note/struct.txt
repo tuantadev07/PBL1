@@ -1,0 +1,134 @@
+﻿CẤU TRÚC HIỆN TẠI
+
+1. main
+- giữ flow chính của chương trình
+- gọi ui để hiện menu, nhận input
+- gọi game để khởi tạo ván, xử lý luật, apply move
+- gọi ai để lấy nước đi của máy
+- hiện tại PVAI đang là mode test cấu trúc
+
+2. ui
+- giữ phần in ra màn hình và nhận input
+- có menu chính, menu mode, menu thoát
+- có phần show trạng thái game trước đó / hiện tại / nước đi cuối
+- có phần nhập nước đi của người chơi
+- ui chỉ nên kiểm tra định dạng input
+- ui không nên giữ luật game
+
+3. game
+- giữ dữ liệu của ván game
+- giữ Move, GameState
+- có init_game, free_game, next_turn, is_game_over, is_valid_move, apply_move, copy_game_state
+- game là chỗ giữ luật và trạng thái ván
+
+4. ai
+- đọc GameState
+- sinh Move hợp lệ cho máy
+- hiện tại là random đơn giản
+- ai không tự sửa game state
+
+5. common
+- random
+  + random.h / random.cpp
+  + dùng để random số sỏi, random nước đi của AI
+- common_utils
+  + common_utils.h / common_utils.cpp
+  + đang có swap_int
+- vector
+  + vector.h / vector.cpp
+  + dùng làm mảng động int cho piles
+
+LIÊN KẾT HIỆN TẠI
+- main -> ui, ai, game
+- ui.h -> game.h
+- ai.h -> game.h
+- ai.cpp -> ai.h, random.h
+- game.h -> vector.h
+- game.cpp -> game.h, random.h
+- random.cpp -> random.h, common_utils.h
+
+GHI CHÚ VỀ CHỦ QUYỀN
+- main là chỗ nối mọi thứ lại
+- ui chỉ lo hiện và nhập
+- game chỉ lo state với luật
+- ai chỉ lo chọn move
+- vector/random/common_utils là đồ dùng chung, không phải module nghiệp vụ
+
+
+CẤU TRÚC DỰ ĐỊNH
+
+mục tiêu trước mắt là chốt nền móng, chưa vội làm thêm chức năng nếu khung chưa ổn.
+PVAI vẫn chỉ là mode để test cấu trúc.
+AIVAI hiện chưa ưu tiên làm.
+
+1. tách settings ra riêng
+- tạo file riêng cho settings, ví dụ: game_settings.h
+- chỗ này giữ các cấu hình của game trước khi vào ván
+
+2. trong settings sẽ có
+- GameMode
+- GameRule
+- GameSettings
+
+3. GameSettings dự định giữ
+- pileCount
+- maxTakePerMove
+- gameRule
+
+4. ý nghĩa từng cái
+- pileCount
+  + là cấu hình của game
+  + không nên hỏi riêng mỗi lần start game nữa
+  + sau này nếu đổi thì đổi ở settings
+- maxTakePerMove
+  + là số sỏi tối đa được bốc trong 1 lượt
+  + 0 = vô hạn
+  + > 0 = có giới hạn
+- gameRule
+  + bốc cuối là thua
+  + hoặc bốc cuối là thắng
+
+5. sau này GameState sẽ nên có
+- piles
+- gameMode
+- currentTurn
+- totalStones
+- settings
+
+nghĩa là:
+- GameSettings = cấu hình của ván
+- GameState = trạng thái đang chạy của ván
+
+6. hướng liên kết dự định
+- main -> ui, ai, game, settings
+- ui.h -> game.h hoặc game_settings.h nếu cần kiểu dữ liệu
+- game.h -> vector.h, game_settings.h
+- ai.h -> game.h
+- ai.cpp -> ai.h, random.h
+
+7. chỗ cần dời ra khỏi ui
+- GameMode hiện đang ở ui.h -> sau này nên dời ra settings hoặc game
+- GameRule hiện đang ở ui.h -> sau này cũng nên dời ra settings hoặc game
+- ui không nên là chỗ giữ enum nghiệp vụ lâu dài
+
+8. flow dự định sau khi chốt lại khung
+- main menu
+- settings menu
+- start game
+- game dùng settings hiện tại để init ván
+- trong start_game không hỏi pileCount riêng nữa
+
+9. settings menu dự định có
+- đổi số lượng đống sỏi
+- đổi luật thắng thua
+- đổi số sỏi tối đa được bốc mỗi lượt
+
+10. AI về sau
+- không cần file settings riêng
+- nhưng phải đọc theo luật trong GameState / GameSettings
+- ví dụ nếu có maxTakePerMove thì AI cũng phải obey theo
+
+11. chốt tư tưởng
+- chưa xây thêm nếu khung chưa ổn
+- ưu tiên làm chắc phần cấu trúc dữ liệu và sự liên kết giữa file trước
+- khi khung ổn rồi mới làm tiếp PVP, settings menu đầy đủ, rồi mới tính phần khác
