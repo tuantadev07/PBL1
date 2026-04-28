@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-> # *Tôn Nguyễn Khánh Huyền*
-> # *Tạ Anh Tuấn*
-=======
-# NIM Game
-
 > **PBL1 - Project-Based Learning 1**
 > Đại học Bách khoa - Đại học Đà Nẵng (DUT)
 
@@ -117,7 +111,7 @@ nim-game.exe
 4. Bắt đầu chơi: chọn đống đá → chọn số đá muốn lấy
 5. Người lấy viên đá cuối cùng sẽ thua (hoặc thắng tùy luật)
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 | Công nghệ | Mục đích |
 |-----------|----------|
@@ -130,12 +124,11 @@ nim-game.exe
 
 <!-- Thêm thông tin thành viên tại đây -->
 
-| STT | Họ và tên            |   MSSV   |
-|-----|----------------------|----------|
-| 1   |Tạ Anh Tuấn           |          |
+| STT |Họ và tên|   MSSV   |
+|-----|---------|----------|
+| 1   |Tạ Anh Tuấn|          |
 | 2   |Tôn Nguyễn Khánh Huyền|          |
 
 ## License
 
 Project này được thực hiện cho mục đích học tập tại **Đại học Bách khoa - Đại học Đà Nẵng**.
->>>>>>> 2fa104a (docs: them README mo ta du an NIM Game)
