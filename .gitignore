@@ -1,0 +1,13 @@
+# Build artifacts
+build/*.o
+*.exe
+
+# IDE / Editor
+.vscode/
+.VSCodeCounter/
+
+# Notes (ca nhan)
+.note/
+
+# Test
+test/

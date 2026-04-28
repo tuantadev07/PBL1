@@ -1,9 +1,0 @@
-"filename", "language", "C++", "comment", "blank", "total"
-"d:\code\project\PBL1-NIM-Game\include\ai.h", "C++", 3, 0, 4, 7
-"d:\code\project\PBL1-NIM-Game\include\common_utils.h", "C++", 2, 1, 2, 5
-"d:\code\project\PBL1-NIM-Game\include\game.h", "C++", 21, 6, 12, 39
-"d:\code\project\PBL1-NIM-Game\include\game_settings.h", "C++", 42, 0, 13, 55
-"d:\code\project\PBL1-NIM-Game\include\random.h", "C++", 2, 1, 2, 5
-"d:\code\project\PBL1-NIM-Game\include\ui.h", "C++", 77, 16, 38, 131
-"d:\code\project\PBL1-NIM-Game\include\vector.h", "C++", 19, 14, 13, 46
-"Total", "-", 166, 38, 84, 288
