@@ -1,0 +1,23 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "Win64 (C)",
+      "compilerPath": "C:/MinGW/bin/gcc.exe",
+      "cStandard": "c99",
+      "includePath": [
+        "C:/raylib/raylib/src/**",
+        "${workspaceFolder}/**"
+      ]
+    },
+    {
+      "name": "Win64 (C++)",
+      "compilerPath": "C:/MinGW/bin/g++.exe",
+      "cppStandard": "c++17",
+      "includePath": [
+        "C:/raylib/raylib/src/**",
+        "${workspaceFolder}/**"
+      ]
+    }
+  ]
+}
