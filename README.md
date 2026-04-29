@@ -120,7 +120,7 @@ nim-game.exe
 | MinGW/g++ | Compiler |
 | VS Code | IDE |
 
-## 👥 Thành viên nhóm
+## Thành viên nhóm
 
 <!-- Thêm thông tin thành viên tại đây -->
 
