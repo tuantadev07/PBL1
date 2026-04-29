@@ -3,7 +3,7 @@ build/*.o
 *.exe
 
 # IDE / Editor
-.vscode/
+
 .VSCodeCounter/
 
 # Notes (ca nhan)

@@ -1,0 +1,56 @@
+{
+    "version":  "0.2.0",
+    "configurations":  [
+                           {
+                               "name":  "Debug active exe",
+                               "type":  "cppdbg",
+                               "request":  "launch",
+                               "program":  "${fileDirname}\\\\${fileBasenameNoExtension}.exe",
+                               "args":  [
+
+                                        ],
+                               "stopAtEntry":  false,
+                               "cwd":  "${fileDirname}",
+                               "environment":  [
+
+                                               ],
+                               "externalConsole":  true,
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
+                               "preLaunchTask":  "02) Build active -\u003e \u003cname\u003e.exe (link all build/*.o)"
+                           },
+                           {
+                               "name":  "Debug nim-game.exe",
+                               "type":  "cppdbg",
+                               "request":  "launch",
+                               "program":  "${workspaceFolder}\\nim-game.exe",
+                               "args":  [
+
+                                        ],
+                               "stopAtEntry":  false,
+                               "cwd":  "${workspaceFolder}",
+                               "environment":  [
+
+                                               ],
+                               "externalConsole":  true,
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:\\MinGW\\bin\\gdb.exe",
+                               "preLaunchTask":  "03) Build all src -\u003e nim-game.exe"
+                           },
+                           {
+                            "name": "Debug active file",
+                            "type": "cppdbg",
+                            "request": "launch",
+                            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                            "args": [],
+                            "stopAtEntry": false,
+                            "cwd": "${workspaceFolder}",
+                            "environment": [],
+                            "externalConsole": true,
+                            "MIMode": "gdb",
+                            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+                            "preLaunchTask": "04) Build active file -> active.exe"
+                            }
+
+                       ]
+}
