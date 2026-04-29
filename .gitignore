@@ -1,9 +1,9 @@
 # Build artifacts
-build/*.o
-*.exe
+# build/*.o
+# *.exe
 
 # IDE / Editor
-
+# .vscode
 .VSCodeCounter/
 
 # Notes (ca nhan)
